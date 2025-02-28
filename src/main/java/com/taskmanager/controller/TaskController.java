@@ -3,6 +3,7 @@ package com.taskmanager.controller;
 import com.taskmanager.model.Task;
 import com.taskmanager.model.TaskPriority;
 import com.taskmanager.model.TaskStatus;
+import com.taskmanager.service.TaskAiService;
 import com.taskmanager.service.TaskService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,41 +16,49 @@ import java.util.Optional;
 @RequestMapping("/api/tasks")
 @CrossOrigin(origins = "http://localhost:4200")
 public class TaskController {
-	 @Autowired
-	    private TaskService taskService;
+	@Autowired
+	private TaskService taskService;
 
-	    @GetMapping
-	    public List<Task> getAllTasks() {
-	        return taskService.getAllTasks();
-	    }
+	@Autowired
+	private TaskAiService taskAiService;
 
-	    @GetMapping("/{id}")
-	    public Optional<Task> getTaskById(@PathVariable Long id) {
-	        return taskService.getTaskById(id);
-	    }
+	@GetMapping
+	public List<Task> getAllTasks() {
+		return taskService.getAllTasks();
+	}
 
-	    @GetMapping("/status/{status}")
-	    public List<Task> getTasksByStatus(@PathVariable TaskStatus status) {
-	        return taskService.getTasksByStatus(status);
-	    }
+	@GetMapping("/{id}")
+	public Optional<Task> getTaskById(@PathVariable Long id) {
+		return taskService.getTaskById(id);
+	}
 
-	    @GetMapping("/priority/{priority}")
-	    public List<Task> getTasksByPriority(@PathVariable TaskPriority priority) {
-	        return taskService.getTasksByPriority(priority);
-	    }
+	@GetMapping("/status/{status}")
+	public List<Task> getTasksByStatus(@PathVariable TaskStatus status) {
+		return taskService.getTasksByStatus(status);
+	}
 
-	    @PostMapping
-	    public Task createTask(@RequestBody Task task) {
-	        return taskService.createTask(task);
-	    }
+	@GetMapping("/priority/{priority}")
+	public List<Task> getTasksByPriority(@PathVariable TaskPriority priority) {
+		return taskService.getTasksByPriority(priority);
+	}
 
-	    @PutMapping("/{id}")
-	    public Task updateTask(@PathVariable Long id, @RequestBody Task taskDetails) {
-	        return taskService.updateTask(id, taskDetails);
-	    }
+	@PostMapping
+	public Task createTask(@RequestBody Task task) {
+		return taskService.createTask(task);
+	}
 
-	    @DeleteMapping("/{id}")
-	    public void deleteTask(@PathVariable Long id) {
-	        taskService.deleteTask(id);
-	    }
+	@PutMapping("/{id}")
+	public Task updateTask(@PathVariable Long id, @RequestBody Task taskDetails) {
+		return taskService.updateTask(id, taskDetails);
+	}
+
+	@DeleteMapping("/{id}")
+	public void deleteTask(@PathVariable Long id) {
+		taskService.deleteTask(id);
+	}
+	
+	@PostMapping("/suggest")
+    public String getTaskSuggestion(@RequestBody String description) {
+        return taskAiService.generateTaskSuggestion(description);
+    }
 }
